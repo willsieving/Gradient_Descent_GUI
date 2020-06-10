@@ -12,6 +12,16 @@ import matplotlib
 matplotlib.use('TkAgg')
 sg.change_look_and_feel('Dark Blue')
 
+def set_progress_window(length):
+    progress_layout = [[sg.Text('      \n                                               ', key='_UPDATETEXT_')],
+                       # Character count must be large for large update text later on
+                       [sg.ProgressBar(length, orientation='h', size=(20, 20), key='progressbar')],
+                       [sg.Cancel(button_text='Stop')]]
+
+    window = sg.Window('Running Gradient Descent...', progress_layout, finalize=True, icon='3d_graph_icon.ico')
+    progress_bar = window['progressbar']
+    return window, progress_bar
+
 def set_fig(plot_vals, mse_vals, plot_cost, plot_t0, plot_t1, thetas, mse):
     global fig
     fig = plt.figure()
@@ -89,17 +99,35 @@ def gradient_descent(multiplier=0.01, thetas=np.array([2.9, 2.9]), length=1000):
     plot_vals = thetas.reshape(1, 2)
     mse_vals = mse(y_5, thetas[0] + thetas[1] * x_5)
 
+    progress_window, progress_bar = set_progress_window(length=length)
+
+
     for i in range(length):
         thetas = thetas - multiplier * grad(x_5, y_5, thetas)
         # if slopes are larger then subtract more from thetas
         # make bigger steps if slopes are larger
 
+        progress_event, progress_values = progress_window.read(timeout=10)
+        if progress_event == 'Cancel' or progress_event == None:
+            break
+
+        # update bar with loop value +1 so that bar eventually reaches the maximum
+        progress_bar.UpdateBar(i + 1)
+
+        update_str = f'Calculating Thetas...\nIteration: {i}/{length}'
+        progress_window['_UPDATETEXT_'].update(update_str)
+        # !!!!----- IMPORTANT -----!!!!
+        # Your update text must be =< characters than your original text
+
         print(thetas)
+
 
         # Append the new values to our numpy arrays
         plot_vals = np.concatenate((plot_vals, thetas.reshape(1, 2)), axis=0)
         mse_vals = np.append(mse_vals, values=mse(y_5, thetas[0] + thetas[1] * x_5))
 
+    # Don't forget to close progress window
+    progress_window.close()
     return plot_vals, mse_vals, thetas
 
 def create_constants(nr_thetas=200):
@@ -130,10 +158,12 @@ layout = [[sg.Text('Gradient Descent')],
           [sg.Button('Ok')]]
 
 
+
+
 # create the form and show it without the plot
 window = sg.Window('Demo Application - Embedding Matplotlib In PySimpleGUI', layout, finalize=True,
-                   element_justification='center', font='Helvetica 18', location=(200, 0))
-
+                   element_justification='center', font='Helvetica 18', location=(200, 0),
+                   icon='3d_graph_icon.ico')
 
 while True:
     event, values = window.read()
