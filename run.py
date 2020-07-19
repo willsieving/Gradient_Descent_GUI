@@ -21,9 +21,9 @@ if __name__ == '__main__':
               [sg.Button('Ok')]]
 
     # create the form and show it without the plot
-    window = sg.Window('Demo Application - Embedding Matplotlib In PySimpleGUI', layout, finalize=True,
+    window = sg.Window('Visualizing Gradient Descent', layout, finalize=True,
                        element_justification='center', font='Helvetica 18', location=(200, 0),
-                       icon='3d_graph_icon.ico')
+                       icon='images/3d_graph_icon.ico')
 
     fig_canvas_agg = None
 
