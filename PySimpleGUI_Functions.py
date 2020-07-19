@@ -5,6 +5,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 def set_progress_window(length):
     progress_layout = [[sg.Text('      \n                                               ', key='_UPDATETEXT_')],
                        # Character count must be large for large update text later on
+                       [sg.Text('                                                                       \n                                                                             ', key='_UPDATETHETAS_')],
                        [sg.ProgressBar(length, orientation='h', size=(20, 20), key='progressbar')],
                        [sg.Cancel(button_text='Stop')]]
 

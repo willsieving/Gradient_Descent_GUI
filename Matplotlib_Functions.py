@@ -93,7 +93,9 @@ def gradient_descent(x_5, y_5, multiplier=0.01, thetas=np.array([2.9, 2.9]), len
         # !!!!----- IMPORTANT -----!!!!
         # Your update text must be =< characters than your original text
 
-        print(thetas)
+        progress_window['_UPDATETHETAS_'].update(f'Theta_0/Y-Intercept: {thetas[0]}\nTheta_1/Slope:{thetas[1]}')
+
+
 
 
         # Append the new values to our numpy arrays
